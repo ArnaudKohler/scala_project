@@ -1,7 +1,7 @@
 val scala3Version = "3.4.2"
 
 lazy val core = project
-  .in(file("."))
+  .in(file("core"))
   .settings(
     name := "scala_project",
     version := "0.1.0-SNAPSHOT",
