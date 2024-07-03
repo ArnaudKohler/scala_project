@@ -4,13 +4,13 @@ val scalaTestVersion = "3.2.19"
 lazy val core = project
   .in(file("core"))
   .settings(
-    name := "scala_project",
+    name := "core",
     version := "0.1.0-SNAPSHOT",
 
     scalaVersion := scala3Version,
 
-    libraryDependencies += "org.scalatest" %% "scalatest" % scalaTestVersion % "test",
-    libraryDependencies += "org.scalatest" %% "scalatest-flatspec" % scalaTestVersion % "test"
+    libraryDependencies += "dev.zio" %% "zio-json" % "0.3.0",
+    libraryDependencies += "org.scalameta" %% "munit" % "1.0.0" % Test
   )
 
 lazy val zio = (project in file("zio"))
@@ -19,3 +19,4 @@ lazy val zio = (project in file("zio"))
     scalaVersion := scala3Version,
     libraryDependencies += "dev.zio" %% "zio" % "1.0.12"
   )
+
