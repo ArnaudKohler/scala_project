@@ -7,9 +7,9 @@ lazy val core = project
     version := "0.1.0-SNAPSHOT",
 
     scalaVersion := scala3Version,
-
     libraryDependencies += "dev.zio" %% "zio-json" % "0.3.0",
-    libraryDependencies += "org.scalameta" %% "munit" % "1.0.0" % Test
+    libraryDependencies += "org.scalameta" %% "munit" % "1.0.0" % Test,
+
   )
 
 lazy val zio = (project in file("zio"))

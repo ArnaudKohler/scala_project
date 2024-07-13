@@ -16,20 +16,6 @@ case class Undigraph[N, E <: Edge[N]](nodes: Set[N], edges: Set[E]) extends Grap
       Undigraph(nodes, edges - edge)
     else
       Undigraph(nodes, edges)
-
-  def toDot: String = {
-    val nodeString = getAllNodes.map(n => s" $n;".mkString("\n"))
-    val edgeString = getAllEdges.map{ edge => 
-      val from = edge.from.toString
-      val to = edge.to.toString
-      val label = edge match {
-        case weighted: WeightedEdge[N] => s"[label = ${weighted.weight}]" 
-        case _ => ""
-      }
-      s"$from -- $to $label;".mkString("\n")
-    }
-    s"graph G {\n$nodeString\n$edgeString\n}"
-  }
 }
 
 object Undigraph {
