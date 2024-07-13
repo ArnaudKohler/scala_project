@@ -70,4 +70,3 @@ val d2 = d1.addEdge(WeightedEdge(n1, n3, 1))
 d2
 
 val d3 = d2.addEdge(WeightedEdge(n1, 4, 1)) 
-d3.getNeighbors()
