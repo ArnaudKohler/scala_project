@@ -6,4 +6,3 @@ trait Graph[N, E <: Edge[N]]:
         def getNeighbors(node: N): Set[N]
         def addEdge(edge: E): Graph[N,E]
         def removeEdge(edge: E): Graph[N,E]
-        def toDot: String

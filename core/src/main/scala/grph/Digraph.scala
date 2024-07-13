@@ -17,19 +17,6 @@ case class DiGraph[N, E <: Edge[N]](nodes: Set[N], edges: Set[E]) extends Graph[
     else
       DiGraph(nodes, edges)
   
-  def toDot: String = {
-    val nodeString: String = getAllNodes.map{node => s"\t${node};"}.mkString("\n")
-    val edgeString: String = getAllEdges.map{ edge =>
-      val from = edge.from.toString
-      val to = edge.to.toString
-      val label = edge match 
-        case weighted: WeightedEdge[N] => s"[label = ${weighted.weight}]"
-        case _ => ""
-      s"\t$from -> $to$label"
-    }.mkString("\n")
-
-    s"digraph G {\n$nodeString\n$edgeString\n}"
-  }
 }
 
 object DiGraph {
