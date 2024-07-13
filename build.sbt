@@ -10,6 +10,7 @@ lazy val core = project
     scalaVersion := scala3Version,
     libraryDependencies += "dev.zio" %% "zio-json" % "0.3.0",
     libraryDependencies += "org.scalameta" %% "munit" % "1.0.0" % Test,
+    libraryDependencies += "org.scalatest" %% "scalatest-flatspec" % scalaTestVersion % "test"
 
   )
 
