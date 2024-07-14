@@ -21,4 +21,5 @@ case class Undigraph[N, E <: Edge[N]](nodes: Set[N], edges: Set[E]) extends Grap
 object Undigraph {
   implicit def UndigraphDecoder[N: JsonDecoder, E <: Edge[N]: JsonDecoder]: JsonDecoder[Undigraph[N, E]] = DeriveJsonDecoder.gen[Undigraph[N, E]]
   implicit def UndigraphEncoder[N: JsonEncoder, E <: Edge[N]: JsonEncoder]: JsonEncoder[Undigraph[N, E]] = DeriveJsonEncoder.gen[Undigraph[N, E]]
+  def empty[N, E <: Edge[N]]: Undigraph[N, E] = Undigraph(Set.empty[N], Set.empty[E])
 }
