@@ -1,18 +1,23 @@
 package operations
 
 import Grph._
+import operations.DepthFirstSearch._
 
 object TopologicalSorting {
   def topologicalSort[N, E <: Edge[N]](graph: Graph[N, E]): List[N] = {
-    def topologicalSortHelper(node: N, visited: Set[N], stack: List[N]): List[N] = {
-      if (visited.contains(node)) stack
-      else {
-        val neighbors = graph.getNeighbors(node)
-        neighbors.foldLeft(stack)((acc, neighbor) => topologicalSortHelper(neighbor, visited + node, acc))
+    val nodes = graph.getAllNodes
+    var visited = Set[N]()
+    var stack = List[N]()
+
+    def topologicalSortHelper(node: N): Unit = {
+      if (!visited.contains(node)) {
+        val result = dfs(graph, node) // get all nodes reachable from the current node
+        visited ++= result // add all reachable nodes to the visited set
+        stack = result.toList ::: stack // add all reachable nodes to the stack
       }
     }
 
-    val nodes = graph.getAllNodes
-    nodes.foldLeft(List.empty[N])((acc, node) => topologicalSortHelper(node, Set.empty, acc))
+    nodes.foreach(topologicalSortHelper) // call topologicalSortHelper on all nodes in the graph
+    stack.reverse
   }
-} 
+}

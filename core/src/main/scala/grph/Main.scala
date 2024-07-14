@@ -4,6 +4,8 @@ import Grph.Graphviz._
 import operations.BreadthFirstSearch._
 import operations.DepthFirstSearch._
 import operations.TopologicalSorting._
+import operations.CycleDetection._
+import operations.Floyd._
 
 object Main extends App {
 
@@ -27,9 +29,13 @@ object Main extends App {
 
     /* dfs(d2,1).foreach(println)
     bfs(d2,1).foreach(println) */
-    topologicalSort(d2).foreach(println)
-    
+    println(topologicalSort(d2))
+    val s2 = Set(WeightedEdge(n1, n2, 1), WeightedEdge(n2, n1, -21), WeightedEdge(n2, n3, 1))
+    val d4 = DiGraph(Set(n1, n2,n3), s2)
+    println(hasCycle(d4))
 
+    println(d4.toDot)
+    println(floyd(d4))
     
 
 
