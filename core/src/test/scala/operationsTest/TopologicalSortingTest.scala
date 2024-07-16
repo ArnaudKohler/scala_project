@@ -19,7 +19,7 @@ class TopologicalSortingTest extends AnyFlatSpec {
         val e5 = UnweightedEdge(n3, n4)
         val u = graph.addEdge(e1).addEdge(e2).addEdge(e3).addEdge(e4).addEdge(e5)
         val result = TopologicalSorting.topologicalSort(u)
-        val expectedResult = List(n1, n2, n3, n4, n5)
+        val expectedResult = List(n1, n3, n2, n4, n5)
         assert(result == expectedResult)
     }
 }

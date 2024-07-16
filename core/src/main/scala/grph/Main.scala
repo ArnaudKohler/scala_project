@@ -1,12 +1,11 @@
 import Grph._
-import zio.json._
-import Grph.Graphviz.toDot
-import operations.BreadthFirstSearch._
-import operations.DepthFirstSearch._
+import operations.Dijkstra._
+import Graphviz._
 import operations.TopologicalSorting._
 import operations.CycleDetection._
 import operations.Floyd._
 import operations.TopologicalSorting
+import operations.DepthFirstSearch._
 
 object Main extends App {
 
