@@ -11,13 +11,13 @@ object CycleDetection {
     def cycleHelper(node: N): Boolean = { 
       if (!visited.contains(node))  // If the node has not been visited yet, visit it
         visited += node // Mark node as visited and add to the stack
-        recStack += node // Will keep track of the nodes in the current recursion stack
+        recStack += node
 
 
         val neighbors = graph.getNeighbors(node) // Get all neighbors of the node and iterate over them
         for (neighbor <- neighbors) 
           if (!visited.contains(neighbor) && cycleHelper(neighbor)) true // If the neighbor has not been visited yet, visit it
-          else if (recStack.contains(neighbor)) true //else if it is already in the stack, we have a cycle
+          else if (recStack.contains(neighbor)) true //else if it is in the stack, we have a cycle
         
       
 

@@ -2,6 +2,7 @@ import Grph._
 import operations.Dijkstra._
 import Graphviz._
 import operations.TopologicalSorting._
+import operations.CycleDetection.hasCycle
 
 object Main extends App {
 
@@ -16,11 +17,13 @@ object Main extends App {
     val e3 = UnweightedEdge(no1, no3)
     val e4 = UnweightedEdge(no4, no5)
     val e5 = UnweightedEdge(no3, no4)
-    val u = graph.addEdge(e1).addEdge(e2).addEdge(e3).addEdge(e4).addEdge(e5)
+    val e6 = UnweightedEdge(no4, no1)
+    val u = graph.addEdge(e1).addEdge(e2).addEdge(e3).addEdge(e4).addEdge(e5).addEdge(e6)
 
     println(u.toDot)
     println(topologicalSort(u))
-    val n1 = 1
+    println(hasCycle(u)) 
+    /* val n1 = 1
     val n2 = 2
     val n3 = 3
 
@@ -29,6 +32,7 @@ object Main extends App {
 
     val d2 = d1.addEdge(WeightedEdge(n1, n3, 1))
     println(d1.toDot)
+    println(hasCycle(d1))
     
     // Calcul des distances depuis le nœud source n1
 
@@ -36,5 +40,5 @@ object Main extends App {
     dijkstra(d1, n1) match {
       case Left(errMsg) => println(errMsg)
       case Right(distances) => println(s"Distances from node $n1: [${distances.mkString(", ")}]")
-    }
+    } */
 }
