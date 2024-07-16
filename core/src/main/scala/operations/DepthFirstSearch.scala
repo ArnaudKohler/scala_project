@@ -11,7 +11,6 @@ object DepthFirstSearch {
         neighbors.foldLeft(visited + node)((acc, neighbor) => dfsHelper(neighbor, acc)) // recursively call dfsHelper on all neighbors of the node
       }
     }
-
     dfsHelper(start, Set.empty)
   }
 }

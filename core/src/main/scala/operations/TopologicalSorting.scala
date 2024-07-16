@@ -10,6 +10,7 @@ object TopologicalSorting {
     var stack = List[N]()
 
     def topologicalSortHelper(node: N): Unit = {
+      
       if (!visited.contains(node)) {
         val result = dfs(graph, node) // get all nodes reachable from the current node
         visited ++= result // add all reachable nodes to the visited set
@@ -18,6 +19,6 @@ object TopologicalSorting {
     }
 
     nodes.foreach(topologicalSortHelper) // call topologicalSortHelper on all nodes in the graph
-    stack.reverse
+    stack
   }
 }
