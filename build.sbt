@@ -18,6 +18,7 @@ lazy val zio = (project in file("zio"))
   .settings(
     name := "zio",
     scalaVersion := scala3Version,
-    libraryDependencies += "dev.zio" %% "zio" % "1.0.12"
+    libraryDependencies += "dev.zio" %% "zio" % "1.0.12",
+    libraryDependencies += "dev.zio" %% "zio-http" % "3.0.0-RC9"
   )
 
