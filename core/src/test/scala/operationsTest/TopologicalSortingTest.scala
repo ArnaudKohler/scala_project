@@ -1,14 +1,11 @@
-import Grph._
-import operations.Dijkstra._
-import Graphviz._
-import operations.TopologicalSorting._
-import operations.CycleDetection._
-import operations.Floyd._
+package operationsTest
+
+import org.scalatest.flatspec.AnyFlatSpec
+import Grph.{DiGraph, UnweightedEdge}
 import operations.TopologicalSorting
-import operations.DepthFirstSearch._
 
-object Main extends App {
-
+class TopologicalSortingTest extends AnyFlatSpec {
+    "A TopologicalSorting" should "be able to find a result in a graph" in {
         val graph = DiGraph.empty[Int, UnweightedEdge[Int]]
         val n1 = 1
         val n2 = 2
@@ -22,6 +19,7 @@ object Main extends App {
         val e5 = UnweightedEdge(n3, n4)
         val u = graph.addEdge(e1).addEdge(e2).addEdge(e3).addEdge(e4).addEdge(e5)
         val result = TopologicalSorting.topologicalSort(u)
-        val dfsResult = dfs(u, n1)
-        //print(dfsResult)
+        val expectedResult = List(n1, n3, n2, n4, n5)
+        assert(result == expectedResult)
     }
+}
