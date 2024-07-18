@@ -12,6 +12,7 @@ object TopologicalSorting {
     var stack = List[N]()
 
     def topologicalSortHelper(node: N): Unit = {
+      
       if (!visited.contains(node)) {
         visited += node
         val neighbors = dfs(graph, node) // Use DFS to get all neighbors of the node
@@ -19,8 +20,7 @@ object TopologicalSorting {
         stack = node :: stack // Add the node to the stack at the beginning
       }
     }
-
-    nodes.foreach(topologicalSortHelper)
-    stack  
+    nodes.foreach(topologicalSortHelper) // call topologicalSortHelper on all nodes in the graph
+    stack
   }
 }
