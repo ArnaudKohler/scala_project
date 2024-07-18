@@ -4,6 +4,8 @@ import Graphviz._
 import operations.TopologicalSorting._
 import operations.CycleDetection.hasCycle
 
+import zio.json._
+
 object Main extends App {
 
     val graph = DiGraph.empty[Int, UnweightedEdge[Int]]
@@ -18,12 +20,12 @@ object Main extends App {
     val e4 = UnweightedEdge(no4, no5)
     val e5 = UnweightedEdge(no3, no4)
     val e6 = UnweightedEdge(no4, no1)
-    val u = graph.addEdge(e1).addEdge(e2).addEdge(e3).addEdge(e4).addEdge(e5).addEdge(e6)
+    val u = graph.addEdge(e1)
+    u.addEdge(e2).addEdge(e3).addEdge(e4).addEdge(e5).addEdge(e6)
+    u.removeEdge(e1)
+    println(u.getAllEdges)
 
-    println(u.toDot)
-    println(topologicalSort(u))
-    println(hasCycle(u)) 
-    /* val n1 = 1
+    /*val n1 = 1
     val n2 = 2
     val n3 = 3
 
@@ -33,6 +35,7 @@ object Main extends App {
     val d2 = d1.addEdge(WeightedEdge(n1, n3, 1))
     println(d1.toDot)
     println(hasCycle(d1))
+    
     
     // Calcul des distances depuis le nœud source n1
 

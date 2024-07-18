@@ -4,7 +4,7 @@ import Grph._
 import operations.DepthFirstSearch._
 
 object CycleDetection {
-  def hasCycle[N, E <: Edge[N]](graph: Graph[N, E]): Boolean = {
+  def hasCycle[N, E <: Edge[N]](graph: DiGraph[N, E]): Boolean = {
     var visited = Set[N]()
     var recStack = Set[N]()
 
