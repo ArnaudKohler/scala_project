@@ -9,19 +9,18 @@ import operations.DepthFirstSearch._
 
 object Main extends App {
 
-        val graph = DiGraph.empty[Int, UnweightedEdge[Int]]
+        val graph = DiGraph.empty[Int, WeightedEdge[Int]]
         val n1 = 1
         val n2 = 2
         val n3 = 3
         val n4 = 4
         val n5 = 5
-        val e1 = UnweightedEdge(n1, n2)
-        val e2 = UnweightedEdge(n2, n4)
-        val e3 = UnweightedEdge(n1, n3)
-        val e4 = UnweightedEdge(n4, n5)
-        val e5 = UnweightedEdge(n3, n4)
+        val e1 = WeightedEdge(n1, n2, 2)
+        val e2 = WeightedEdge(n2, n4, 3)
+        val e3 = WeightedEdge(n1, n3, 1)
+        val e4 = WeightedEdge(n4, n5, 4)
+        val e5 = WeightedEdge(n3, n4, 1)
         val u = graph.addEdge(e1).addEdge(e2).addEdge(e3).addEdge(e4).addEdge(e5)
-        val result = TopologicalSorting.topologicalSort(u)
-        val dfsResult = dfs(u, n1)
-        //print(dfsResult)
+        val result = floyd(u)
+        print(result)
     }

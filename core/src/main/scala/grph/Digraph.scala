@@ -11,8 +11,8 @@
         DiGraph(nodes, edges + edge)
       else
         DiGraph(nodes + edge.from + edge.to, edges + edge)
-    def removeEdge(edge: E): DiGraph[N,E] = 
-      if(edges.contains(edge))
+    def removeEdge(edge: E): DiGraph[N, E] = 
+      if (edges.contains(edge))
         DiGraph(nodes, edges - edge)
       else
         DiGraph(nodes, edges)
