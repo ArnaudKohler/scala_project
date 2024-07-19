@@ -9,10 +9,10 @@ object Dijkstra {
     if (hasNegativeWeight) {
       Left("Error, graph contains negative value")
     } else {
-      // Rest of the code remains the same
+
       val nodes = graph.getAllNodes.toList
       val n = nodes.size
-      val distances = Array.fill(n)(Double.MaxValue) // Initialize distances array with infinity
+      val distances = Array.fill(n)(Double.PositiveInfinity) // Initialize distances array with infinity
       val visited = Array.fill(n)(false)          // Track visited nodes
       val nodesMap = nodes.zipWithIndex.toMap     // Map nodes to their indices for quick access
   
@@ -23,7 +23,7 @@ object Dijkstra {
       // Process all nodes
       for (_ <- 0 until n) {
         // Find the node with the minimum distance that hasn't been visited
-        var minDist = Double.MaxValue
+        var minDist = Double.PositiveInfinity
         var minIndex = -1
         for (i <- 0 until n) {
           if (!visited(i) && distances(i) < minDist) {
@@ -33,7 +33,9 @@ object Dijkstra {
         }
   
         // If no node found, break (graph is disconnected or all reachable nodes are processed)
-        if (minIndex == -1) Right(distances)
+        if (minIndex == -1) {
+          return Right(distances)
+        }
   
         // Mark the selected node as visited
         visited(minIndex) = true
@@ -44,7 +46,7 @@ object Dijkstra {
         for (neighbor <- neighbors) {
           val neighborIndex = nodesMap(neighbor)
           val edge = graph.getAllEdges.find(e => e.from == currentNode && e.to == neighbor).getOrElse(null)
-          val weight = if (edge != null) edge.weight else Double.MaxValue
+          val weight = if (edge != null) edge.weight else Double.PositiveInfinity
   
           val newDistance = distances(minIndex) + weight
           if (newDistance < distances(neighborIndex)) {

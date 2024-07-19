@@ -13,13 +13,30 @@ import operations.CycleDetection._
 import operations.Floyd._
 import operations.Dijkstra._
 
-object OperationRoutes {
+object OperationWeighted {
 
   def routes[N: Tag: JsonDecoder: JsonEncoder, E <: Edge[N]: Tag: JsonDecoder: JsonEncoder] = {
     Routes(
 
+      Method.GET / "weighted" / "graphViz" -> handler { (req: Request) => {
+        for {
+          graph <- ZIO.serviceWithZIO[GraphStateService[N, E]](_.getGraph)  // getActual graph
+          graphViz <- graph match { //Check if it's a DiGraph or an Undigraph
+            case undigraph: Undigraph[N, E] => ZIO.succeed(undigraph.toDot)
+            case digraph: DiGraph[N, E] => ZIO.succeed(digraph.toDot)
+            case _ => ZIO.succeed("Unknown graph type")
+          }
+        } yield Response.text(graphViz) //Return the graphViz
+      }}.sandbox,
+
+      Method.DELETE / "weighted" / "delete" -> handler { (req: Request) => {        
+        for {
+          _ <- ZIO.serviceWith[GraphStateService[N, E]](_.clearGraph)  // Mettre à jour l'état du graphe
+        } yield Response.text("Graph deleted")
+      }}.sandbox,
+
       // GET /DFS --> get the Depth First Search of the current graph
-      Method.GET / "DFS" / string("startingNode") -> handler { (startingNode: String, req: Request) => {
+      Method.GET / "weighted" / "DFS" / int("startingNode") -> handler { (startingNode: Int, req: Request) => {
         for {
           graph <- ZIO.serviceWithZIO[GraphStateService[N, E]](_.getGraph)  // getActual graph
           DFS <- graph match {
@@ -30,7 +47,7 @@ object OperationRoutes {
       }}.sandbox,
 
      // GET /BFS --> get the Breadth First Search of the current graph
-     Method.GET / "BFS" / string("startingNode") -> handler { (startingNode: String, req: Request) => {
+     Method.GET / "weighted" / "BFS" / int("startingNode") -> handler { (startingNode: Int, req: Request) => {
         for {
           graph <- ZIO.serviceWithZIO[GraphStateService[N, E]](_.getGraph)  // getActual graph
           BFS <- graph match {
@@ -41,7 +58,7 @@ object OperationRoutes {
       }}.sandbox,
 
       // GET /topological --> get the topological order of the current graph
-      Method.GET / "topological" -> handler { (req: Request) => {
+      Method.GET / "weighted" / "topological" -> handler { (req: Request) => {
         for {
           graph <- ZIO.serviceWithZIO[GraphStateService[N, E]](_.getGraph)  // getActual graph
           topological <- graph match {
@@ -52,7 +69,7 @@ object OperationRoutes {
       }}.sandbox,
 
       //GET /cycle --> get if the current graph has a cycle
-      Method.GET / "cycle" -> handler { (req: Request) => {
+      Method.GET / "weighted" / "cycle" -> handler { (req: Request) => {
         for {
           graph <- ZIO.serviceWithZIO[GraphStateService[N, E]](_.getGraph)  // getActual graph
           cycle <- graph match {
@@ -63,35 +80,33 @@ object OperationRoutes {
       }}.sandbox,
 
         //GET /floyd --> get the shortest path between all nodes of the current graph
-        Method.GET / "floyd" -> handler { (req: Request) => {
+        Method.GET / "weighted" / "floyd" -> handler { (req: Request) => {
             for {
             graph <- ZIO.serviceWithZIO[GraphStateService[N, E]](_.getGraph)  // getActual graph
             floyd <- graph match {
-                case digraph: DiGraph[N, WeightedEdge[N]] => 
-                    println("TEST DIGRPAGH")
-                    println("floyd" + floyd(digraph))
-                    ZIO.succeed(floyd(digraph)) // Proceed Floyd
-                case undigraph: Undigraph[N, WeightedEdge[N]] => 
-                    println("TEST UNDIGRPAGH")
-                    println("floyd" + floyd(undigraph))
-                    ZIO.succeed(floyd(undigraph)) // Proceed Floyd
+                case digraph: DiGraph[N, WeightedEdge[N]] => ZIO.succeed(floyd(digraph)) // Proceed Floyd
+                case undigraph: Undigraph[N, WeightedEdge[N]] => ZIO.succeed(floyd(undigraph)) // Proceed Floyd
                 case _ => ZIO.succeed("Not allowed graph type")
             }
             } yield Response.text(floyd.toString()) //Return the result
         }}.sandbox,
      
         //GET /dijkstra --> get the shortest path between two nodes of the current graph
-        Method.GET / "dijkstra" -> handler { (req: Request) => {
-            for {
-            graph <- ZIO.serviceWithZIO[GraphStateService[N, E]](_.getGraph)  // getActual graph
-            dijkstra <- graph match {
-                case grph: Graph[N, WeightedEdge[N]] => 
-                    println("dijkstra")
-                    ZIO.succeed(dijkstra(grph, grph.getAllNodes.head)) // Proceed Dijkstra
-                case _ => ZIO.succeed("Not allowed graph type")
-            }
-            } yield Response.text(dijkstra.toString()) //Return the result
-        }}.sandbox
+        Method.GET / "weighted" / "dijkstra" / int("startingNode") -> handler { (startingNode: Int, req: Request) => {
+  for {
+    graph <- ZIO.serviceWithZIO[GraphStateService[N, E]](_.getGraph) // getActual graph
+    dijkstraResult <- graph match {
+      case graph: Graph[N, WeightedEdge[N]] => ZIO.succeed(dijkstra(graph, startingNode.asInstanceOf[N])) // Proceed Dijkstra
+      case _ => ZIO.succeed(Left(new Exception("Not allowed graph type")))
+    }
+    response <- dijkstraResult match {
+      case Left(error) => ZIO.succeed(Response.text(s"Failed to run Dijkstra: $error"))
+      case Right(result) => ZIO.succeed(Response.text(result.mkString("\n"))) // Return the result
+      case _ => ZIO.succeed(Response.text("Unknown error"))
+    }
+  } yield response
+}}.sandbox
+
 
 
     )

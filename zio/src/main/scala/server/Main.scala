@@ -5,16 +5,26 @@ import zio.http._
 import server.routes._
 import Grph._
 
-
 object Main extends ZIOAppDefault {
-  
-  val emptyGraph = DiGraph.empty[Int, UnweightedEdge[Int]]
-  val graphLayer = GraphStateService.layer(emptyGraph)
 
-  val digraphRoutes = DigraphRoutes.routes[Int, UnweightedEdge[Int]]
-  val otherRoutes = OtherRoutes.routes[Int, UnweightedEdge[Int]]
-  val undigraphRoutes = UndigraphRoutes.routes[Int, UnweightedEdge[Int]]
-  val operationRoutes = OperationRoutes.routes[Int, UnweightedEdge[Int]]
+  val emptyGraphUnweighted = DiGraph.empty[Int, UnweightedEdge[Int]]
+  val graphLayerUnweighted = GraphStateService.layer[Int, UnweightedEdge[Int]](emptyGraphUnweighted)
+
+  val emptyGraphWeighted = DiGraph.empty[Int, WeightedEdge[Int]]
+  val graphLayerWeighted = GraphStateService.layer[Int, WeightedEdge[Int]](emptyGraphWeighted)
+
+  val digraphWeighted = DigraphWeighted.routes[Int, WeightedEdge[Int]]
+  val digraphUnweighted = DigraphUnweighted.routes[Int, UnweightedEdge[Int]]
+  val undigraphWeighted = UndigraphWeighted.routes[Int, WeightedEdge[Int]]
+  val undigraphUnweighted = UndigraphUnweighted.routes[Int, UnweightedEdge[Int]]
+
+  val operationUnweighted = OperationUnweighted.routes[Int, UnweightedEdge[Int]]
+  val operationWeighted = OperationWeighted.routes[Int, WeightedEdge[Int]]
   def run =
-    Server.serve(digraphRoutes ++ otherRoutes ++ undigraphRoutes ++ operationRoutes).provide(Server.default, graphLayer)
+    Server.serve(digraphWeighted ++ digraphUnweighted ++ undigraphWeighted ++ undigraphUnweighted ++ operationUnweighted ++ operationWeighted)
+      .provide(
+        Server.default,
+        graphLayerUnweighted,
+        graphLayerWeighted
+      )
 }
