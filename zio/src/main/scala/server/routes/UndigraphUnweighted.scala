@@ -65,22 +65,6 @@ object UndigraphUnweighted {
         } yield response
       }}.sandbox,
 
-      Method.GET / "undigraphUnweighted" / "graphViz" -> handler { (req: Request) => {
-        for {
-          graph <- ZIO.serviceWithZIO[GraphStateService[N, E]](_.getGraph)  // getActual graph
-          graphViz <- graph match { //Check if it's a DiGraph or an Undigraph
-            case undigraph: Undigraph[N, E] => ZIO.succeed(undigraph.toDot)
-            case _ => ZIO.succeed("Unknown graph type")
-          }
-        } yield Response.text(graphViz) //Return the graphViz
-      }}.sandbox,
-
-      //PUT /delete --> set empty graph
-      Method.DELETE / "delete" -> handler { (req: Request) => {        
-        for {
-          _ <- ZIO.serviceWith[GraphStateService[N, E]](_.clearGraph)  // Mettre à jour l'état du graphe
-        } yield Response.text("Graph deleted")
-      }}.sandbox
     )
   }
 }

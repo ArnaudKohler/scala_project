@@ -64,16 +64,6 @@ object UndigraphWeighted {
           }
         } yield response
       }}.sandbox,
-
-      Method.GET / "undigraphWeighted" / "graphViz" -> handler { (req: Request) => {
-        for {
-          graph <- ZIO.serviceWithZIO[GraphStateService[N, E]](_.getGraph)  // getActual graph
-          graphViz <- graph match { //Check if it's a DiGraph or an Undigraph
-            case undigraph: Undigraph[N, E] => ZIO.succeed(undigraph.toDot)
-            case _ => ZIO.succeed("Unknown graph type")
-          }
-        } yield Response.text(graphViz) //Return the graphViz
-      }}.sandbox,
     )
   }
 }
