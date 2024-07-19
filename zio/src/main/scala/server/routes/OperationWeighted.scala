@@ -30,8 +30,10 @@ object OperationWeighted {
       }}.sandbox,
 
       Method.DELETE / "weighted" / "delete" -> handler { (req: Request) => {        
-        for {
-          _ <- ZIO.serviceWith[GraphStateService[N, E]](_.clearGraph)  // Mettre à jour l'état du graphe
+         for {
+          service <- ZIO.service[GraphStateService[N, E]]  // get the service
+          _ <- service.clearGraph  // clear the graph
+          response <- ZIO.succeed(Response.text("Graph deleted"))  // return the response
         } yield Response.text("Graph deleted")
       }}.sandbox,
 
@@ -61,11 +63,16 @@ object OperationWeighted {
       Method.GET / "weighted" / "topological" -> handler { (req: Request) => {
         for {
           graph <- ZIO.serviceWithZIO[GraphStateService[N, E]](_.getGraph)  // getActual graph
-          topological <- graph match {
-            case grph: DiGraph[N, E] => ZIO.succeed(topologicalSort(grph)) // Proceed topological order
+          topologicalResult <- graph match {
+            case grph: DiGraph[N, E] => ZIO.succeed(topologicalSort(grph)) // Proceed Topological
             case _ => ZIO.succeed("Not allowed graph type")
           }
-        } yield Response.text(topological.toString()) //Return the result
+          response <- topologicalResult match {
+            case Left(error) => ZIO.succeed(Response.text(s"Failed to run Topological: $error"))
+            case Right(topological) => ZIO.succeed(Response.text(topological.mkString("\n"))) // Return the result
+            case _ => ZIO.succeed(Response.text("Unknown error"))
+          } 
+        } yield response //Return the result
       }}.sandbox,
 
       //GET /cycle --> get if the current graph has a cycle
@@ -93,19 +100,19 @@ object OperationWeighted {
      
         //GET /dijkstra --> get the shortest path between two nodes of the current graph
         Method.GET / "weighted" / "dijkstra" / int("startingNode") -> handler { (startingNode: Int, req: Request) => {
-  for {
-    graph <- ZIO.serviceWithZIO[GraphStateService[N, E]](_.getGraph) // getActual graph
-    dijkstraResult <- graph match {
-      case graph: Graph[N, WeightedEdge[N]] => ZIO.succeed(dijkstra(graph, startingNode.asInstanceOf[N])) // Proceed Dijkstra
-      case _ => ZIO.succeed(Left(new Exception("Not allowed graph type")))
-    }
-    response <- dijkstraResult match {
-      case Left(error) => ZIO.succeed(Response.text(s"Failed to run Dijkstra: $error"))
-      case Right(result) => ZIO.succeed(Response.text(result.mkString("\n"))) // Return the result
-      case _ => ZIO.succeed(Response.text("Unknown error"))
-    }
-  } yield response
-}}.sandbox
+        for {
+          graph <- ZIO.serviceWithZIO[GraphStateService[N, E]](_.getGraph) // getActual graph
+          dijkstraResult <- graph match {
+            case graph: Graph[N, WeightedEdge[N]] => ZIO.succeed(dijkstra(graph, startingNode.asInstanceOf[N])) // Proceed Dijkstra
+            case _ => ZIO.succeed(Left(new Exception("Not allowed graph type")))
+          }
+          response <- dijkstraResult match {
+            case Left(error) => ZIO.succeed(Response.text(s"Failed to run Dijkstra: $error"))
+            case Right(result) => ZIO.succeed(Response.text(result.mkString("\n"))) // Return the result
+            case _ => ZIO.succeed(Response.text("Unknown error"))
+          }
+        } yield response
+      }}.sandbox
 
 
 

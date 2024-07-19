@@ -10,7 +10,7 @@ object Main extends ZIOAppDefault {
   val emptyGraphUnweighted = DiGraph.empty[Int, UnweightedEdge[Int]]
   val graphLayerUnweighted = GraphStateService.layer[Int, UnweightedEdge[Int]](emptyGraphUnweighted)
 
-  val emptyGraphWeighted = DiGraph.empty[Int, WeightedEdge[Int]]
+  val emptyGraphWeighted = Undigraph.empty[Int, WeightedEdge[Int]]
   val graphLayerWeighted = GraphStateService.layer[Int, WeightedEdge[Int]](emptyGraphWeighted)
 
   val digraphWeighted = DigraphWeighted.routes[Int, WeightedEdge[Int]]

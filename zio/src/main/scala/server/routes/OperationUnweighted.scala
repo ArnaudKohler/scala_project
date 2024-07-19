@@ -22,8 +22,12 @@ object OperationUnweighted {
         for {
           graph <- ZIO.serviceWithZIO[GraphStateService[N, E]](_.getGraph)  // getActual graph
           graphViz <- graph match { //Check if it's a DiGraph or an Undigraph
-            case undigraph: Undigraph[N, E] => ZIO.succeed(undigraph.toDot)
-            case digraph: DiGraph[N, E] => ZIO.succeed(digraph.toDot)
+            case undigraph: Undigraph[N, E] => 
+              println("undigraph")
+              ZIO.succeed(undigraph.toDot)
+            case digraph: DiGraph[N, E] => 
+              println("digraph")
+              ZIO.succeed(digraph.toDot)
             case _ => ZIO.succeed("Unknown graph type")
           }
         } yield Response.text(graphViz) //Return the graphViz
@@ -31,7 +35,9 @@ object OperationUnweighted {
 
       Method.DELETE / "unweighted" / "delete" -> handler { (req: Request) => {        
         for {
-          _ <- ZIO.serviceWith[GraphStateService[N, E]](_.clearGraph)  // Mettre à jour l'état du graphe
+          service <- ZIO.service[GraphStateService[N, E]]  // get the service
+          _ <- service.clearGraph  // clear the graph
+          response <- ZIO.succeed(Response.text("Graph deleted"))  // return the response
         } yield Response.text("Graph deleted")
       }}.sandbox,
 
@@ -61,11 +67,16 @@ object OperationUnweighted {
       Method.GET /  "unweighted" / "topological" -> handler { (req: Request) => {
         for {
           graph <- ZIO.serviceWithZIO[GraphStateService[N, E]](_.getGraph)  // getActual graph
-          topological <- graph match {
-            case grph: DiGraph[N, E] => ZIO.succeed(topologicalSort(grph)) // Proceed topological order
+          topologicalResult <- graph match {
+            case grph: DiGraph[N, E] => ZIO.succeed(topologicalSort(grph)) // Proceed Topological
             case _ => ZIO.succeed("Not allowed graph type")
           }
-        } yield Response.text(topological.toString()) //Return the result
+          response <- topologicalResult match {
+            case Left(error) => ZIO.succeed(Response.text(s"Failed to run Topological: $error"))
+            case Right(topological) => ZIO.succeed(Response.text(topological.mkString("\n"))) // Return the result
+            case _ => ZIO.succeed(Response.text("Not allowed graph type"))
+          } 
+        } yield response //Return the result
       }}.sandbox,
 
       //GET /cycle --> get if the current graph has a cycle
