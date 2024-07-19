@@ -36,7 +36,7 @@ object OperationUnweighted {
       }}.sandbox,
 
       // GET /DFS --> get the Depth First Search of the current graph
-      Method.GET / "unweighted" / "DFS" / string("startingNode") -> handler { (startingNode: String, req: Request) => {
+      Method.GET / "unweighted" / "DFS" / int("startingNode") -> handler { (startingNode: Int, req: Request) => {
         for {
           graph <- ZIO.serviceWithZIO[GraphStateService[N, E]](_.getGraph)  // getActual graph
           DFS <- graph match {
@@ -47,7 +47,7 @@ object OperationUnweighted {
       }}.sandbox,
 
      // GET /BFS --> get the Breadth First Search of the current graph
-     Method.GET / "unweighted" / "BFS" / string("startingNode") -> handler { (startingNode: String, req: Request) => {
+     Method.GET / "unweighted" / "BFS" / int("startingNode") -> handler { (startingNode: Int, req: Request) => {
         for {
           graph <- ZIO.serviceWithZIO[GraphStateService[N, E]](_.getGraph)  // getActual graph
           BFS <- graph match {
