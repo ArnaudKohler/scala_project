@@ -70,7 +70,7 @@ object OperationWeighted {
           response <- topologicalResult match {
             case Left(error) => ZIO.succeed(Response.text(s"Failed to run Topological: $error"))
             case Right(topological) => ZIO.succeed(Response.text(topological.mkString("\n"))) // Return the result
-            case _ => ZIO.succeed(Response.text("Unknown error"))
+            case _ => ZIO.succeed(Response.text("Not allowed graph type"))
           } 
         } yield response //Return the result
       }}.sandbox,
