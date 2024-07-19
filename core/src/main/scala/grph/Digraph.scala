@@ -23,3 +23,5 @@
     implicit def diGraphEncoder[N: JsonEncoder, E <: Edge[N]: JsonEncoder]: JsonEncoder[DiGraph[N, E]] = DeriveJsonEncoder.gen[DiGraph[N, E]]
     def empty[N, E <: Edge[N]]: DiGraph[N, E] = DiGraph(Set.empty[N], Set.empty[E])
   }
+
+  

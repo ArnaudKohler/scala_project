@@ -3,13 +3,18 @@ package operations
 import Grph._
 
 import DepthFirstSearch._
+import operations.CycleDetection.hasCycle
 
 object TopologicalSorting {
 
-  def topologicalSort[N, E <: Edge[N]](graph: DiGraph[N, E]): List[N] = {
+  def topologicalSort[N, E <: Edge[N]](graph: DiGraph[N, E]): Either[String, List[N]] = {
     val nodes = graph.getAllNodes.toList
     var visited = Set[N]()
     var stack = List[N]()
+
+    if(hasCycle(graph)) {
+      return Left("Error, graph contains a cycle")
+    }  
 
     def topologicalSortHelper(node: N): Unit = {
       
@@ -21,6 +26,6 @@ object TopologicalSorting {
       }
     }
     nodes.foreach(topologicalSortHelper) // call topologicalSortHelper on all nodes in the graph
-    stack
+    Right(stack)
   }
 }
